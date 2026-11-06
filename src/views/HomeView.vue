@@ -1,34 +1,43 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
 import GameCard from '../components/GameCard.vue'
+import { fetchFreeGames, type Game } from '../utils/games'
+
+const games = ref<Game[]>([])
+const errorMessage = ref<string | null>(null)
+
+onMounted(async () => {
+  try {
+    games.value = await fetchFreeGames()
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'Unable to load games.'
+  }
+})
 </script>
 
 <template>
   <main>
-    <GameCard 
-      id="540"
-      thumbnail="https://www.freetogame.com/g/540/thumbnail.jpg"
-      title="Overwatch" 
-      description="A hero-focused first-person team shooter from Blizzard Entertainment. A hero-focused first-person team shooter from Blizzard Entertainment. A hero-focused first-person team shooter from Blizzard Entertainment." 
-      genre="Shooter" 
-      platform="Windows" 
-      publisher="Activision Blizzard"
-    />
+    <p v-if="errorMessage">{{ errorMessage }}</p>
 
-    <GameCard 
-      id="620"
-      thumbnail="https://www.freetogame.com/g/620/thumbnail.jpg"
-      title="Hero Wars: Dominion Era" 
-      description="A free-to-play fantasy MMORPG where players assemble teams of heroes to battle against powerful enemies." 
-      genre="MMORPG" 
-      platform="Web Browser" 
-      publisher="Nexters"
-    />
+    <template v-for="game in games" :key="game.id">
+      <GameCard 
+        :id="game.id"
+        :thumbnail="game.thumbnail"
+        :title="game.title ?? ''" 
+        :description="game.short_description" 
+        :genre="game.genre" 
+        :platform="game.platform" 
+        :publisher="game.publisher"
+      />
+    </template>
   </main>
 </template>
 
 <style scoped>
 main {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
 }
 </style>

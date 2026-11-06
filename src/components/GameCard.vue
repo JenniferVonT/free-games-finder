@@ -4,16 +4,20 @@ import TagElement from './TagElement.vue'
 
 const props = defineProps<{
   title: string
-  description: string
-  genre: string
-  platform: string
-  publisher: string
-  thumbnail: string
+  description: string | null
+  genre: string | null
+  platform: string | null
+  publisher: string | null
+  thumbnail: string | null
 }>()
 
 // Truncate the description to fit within the card.
 const truncatedDescription = computed(() => {
   const maxCharacters = 90
+
+  if (!props.description) {
+    return ''
+  }
 
   return props.description.length > maxCharacters
     ? `${props.description.slice(0, maxCharacters)}...`
@@ -37,8 +41,12 @@ const truncatedDescription = computed(() => {
             <b>Publisher :</b> <span>{{ publisher }}</span>
             </p>
             <div class="tags">
-                <TagElement :name="genre" />
-                <TagElement :name="platform" />
+                <template v-if="genre">
+                    <TagElement :name="genre" />
+                </template>
+                <template v-if="platform">
+                    <TagElement :name="platform" />
+                </template>
             </div>
         </div>
     </div>
@@ -55,10 +63,13 @@ const truncatedDescription = computed(() => {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    background-color: var(--color-background-soft);
     color: var(--color-text);
     width: 15%;
+    flex: 0 0 15%;
     height: 30vh;
     overflow: hidden;
+    box-shadow: 10px 10px 8px 4px var(--color-shadow);
 }
 
 .overlay {
@@ -110,7 +121,7 @@ const truncatedDescription = computed(() => {
 
 h2 {
     width: 100%;
-    font-size: clamp(1rem, 15cqw, 2.5rem);
+    font-size: clamp(0.8rem, 15cqw, 1.75rem);
     line-height: 2rem;
     color: var(--color-heading);
     margin: 0;
@@ -131,6 +142,7 @@ b {
 @media (max-width: 768px) {
     .card {
         width: 25vw;
+        flex-basis: 25vw;
         height: 35vh;
     }
 }

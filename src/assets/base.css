@@ -20,6 +20,9 @@
   --vt-c-text-light-2: rgba(37, 37, 37, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(238, 238, 238, 0.774);
+
+  --vt-c-shadow-dark: rgba(0, 0, 0, 0.5);
+  --vt-c-shadow-light: rgba(0, 0, 0, 0.2);
 }
 
 /* semantic color variables for this project */
@@ -29,6 +32,7 @@
   --color-background-mute: var(--vt-c-white-mute);
 
   --color-accent: var(--vt-c-accent);
+  --color-shadow: var(--vt-c-shadow-light);
 
   --color-border: var(--vt-c-divider-light-2);
   --color-border-hover: var(--vt-c-divider-light-1);
@@ -48,6 +52,7 @@
     --color-background-mute: var(--vt-c-black-mute);
 
     --color-accent: var(--vt-c-accent);
+    --color-shadow: var(--vt-c-shadow-dark);
 
     --color-border: var(--vt-c-divider-dark-2);
     --color-border-hover: var(--vt-c-divider-dark-1);
