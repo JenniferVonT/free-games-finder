@@ -1,15 +1,18 @@
 @import './base.css';
 
 #app {
-  max-width: 1280px;
+  min-height: 100vh;
   margin: 0 auto;
   font-weight: normal;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
+  color: var(--color-accent);
   transition: 0.4s;
   padding: 3px;
 }
@@ -21,5 +24,6 @@ a,
 }
 
 main {
+  flex: 1;
   padding: 2rem;
 }

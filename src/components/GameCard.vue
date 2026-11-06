@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import Tag from './Tag.vue'
+import TagElement from './TagElement.vue'
 
 const props = defineProps<{
   title: string
@@ -34,11 +34,11 @@ const truncatedDescription = computed(() => {
             </p>
             <hr class="divider" />
             <p class="publ">
-            <b>Publisher :</b> {{ publisher }}
+            <b>Publisher :</b> <span>{{ publisher }}</span>
             </p>
             <div class="tags">
-                <Tag :name="genre" />
-                <Tag :name="platform" />
+                <TagElement :name="genre" />
+                <TagElement :name="platform" />
             </div>
         </div>
     </div>
@@ -47,6 +47,7 @@ const truncatedDescription = computed(() => {
 
 <style scoped>
 .card {
+    container-type: inline-size;
     box-sizing: border-box;
     padding: 0px;
     margin: 10px;
@@ -55,19 +56,19 @@ const truncatedDescription = computed(() => {
     background-repeat: no-repeat;
     background-position: center;
     color: var(--color-text);
-    width: 10vw;
+    width: 15%;
     height: 30vh;
     overflow: hidden;
 }
 
 .overlay {
-    box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     background-color: rgba(0, 0, 0, 0.7);
     width: 100%;
     height: 100%;
-    padding: 5px;
+    padding: 7px;
     overflow: hidden;
 }
 
@@ -79,7 +80,7 @@ const truncatedDescription = computed(() => {
 .tags {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     min-width: 0;
 }
 
@@ -91,10 +92,13 @@ const truncatedDescription = computed(() => {
 }
 
 .publ {
-    font-size: 0.8rem;
+    font-size: clamp(0.75rem, 6cqw, 0.9rem);
     line-height: 1rem;
     margin: 0;
-    overflow-wrap: anywhere;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .desc {
@@ -106,7 +110,8 @@ const truncatedDescription = computed(() => {
 
 h2 {
     width: 100%;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 15cqw, 2.5rem);
+    line-height: 2rem;
     color: var(--color-heading);
     margin: 0;
     overflow-wrap: anywhere;
@@ -121,5 +126,12 @@ p {
 b {
     color: var(--color-heading);
     font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .card {
+        width: 25vw;
+        height: 35vh;
+    }
 }
 </style>
