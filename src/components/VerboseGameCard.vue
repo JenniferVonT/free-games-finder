@@ -89,7 +89,6 @@ onMounted(async () => {
       </div>
       <div id="miscInfo">
         <div class="publ">
-            <p><b>Platform:</b> {{ game?.platform }}</p>
             <p><b>Publisher:</b> {{ game?.publisher }}</p>
             <p><b>Developer:</b> {{ game?.developer }}</p>
         </div>

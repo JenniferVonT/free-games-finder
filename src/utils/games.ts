@@ -4,7 +4,9 @@ import { GenreTypes } from './genresTypes';
 // Fetch all free games from the API.
 export async function fetchFreeGames() {
   try {
-    return await apiRequest<Game[]>('/games');
+    const games = await apiRequest<Game[]>('/games');
+
+    return games
   } catch (error) {
     throw new Error('Could not load games')
   }
@@ -19,23 +21,70 @@ export async function fetchFreeGameById(id: Game['id']) {
   }
 }
 
-// Fetch games by genre
-export async function fetchGamesByGenre(genre: GenreTypes) {
-    return apiRequest<Game[]>(`/games?category=${genre}`);
+export async function fetchGamesByFilter({
+  genre,
+  platform,
+  sort,
+}: GameFilterOptions = {}) {
+  const params = new URLSearchParams();
+
+  if (genre) {
+    params.set('category', genre);
+  }
+
+  if (platform) {
+    params.set('platform', platform);
+  }
+
+  if (sort === Sorts.releaseDate) {
+    params.set('sort-by', 'release-date');
+  }
+
+  const query = params.toString();
+  const games = await apiRequest<Game[]>(query ? `/games?${query}` : '/games');
+
+  if (sort === Sorts.alphabetically) {
+    games.sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''));
+  }
+
+  return games;
 }
 
+// Fetch games by search query, not available on API so has to conduct the query here.
+export async function searchGame(query: string) {
+  // Get all games (TO-DO: best to do this in the backend in the future, or cache this so we don't have to make such large queries with every search)
+  const games = await fetchFreeGames()
+  const res: Game[] = [];
+
+  for (const game of games) {
+    if (game.title?.includes(query)) {
+      res.push(game);
+    }
+  }
+
+  return res;
+
+}
+
+// Fetch games by genre and/or platform
+export type GameFilterOptions = {
+  genre?: GenreTypes;
+  platform?: Platforms;
+  sort?: Sorts;
+};
+
 export type Game =  {
-    id: number;
-    title: string | null;
-    thumbnail: string | null;
-    short_description: string | null;
-    game_url: string | null;
-    genre: string | null;
-    platform: string | null;
-    publisher: string | null;
-    developer: string | null;
-    release_date: string | null;
-    freetogame_profile_url: string | null;
+  id: number;
+  title: string | null;
+  thumbnail: string | null;
+  short_description: string | null;
+  game_url: string | null;
+  genre: string | null;
+  platform: string | null;
+  publisher: string | null;
+  developer: string | null;
+  release_date: string | null;
+  freetogame_profile_url: string | null;
 }
 
 export type GameVerbose = {
@@ -57,14 +106,24 @@ export type GameVerbose = {
 }
 
 type SystemRec = {
-    os: string | null;
-    processor: string | null;
-    memory: string | null;
-    graphics: string | null;
-    storage: string | null;
+  os: string | null;
+  processor: string | null;
+  memory: string | null;
+  graphics: string | null;
+  storage: string | null;
   }
 
 type Screenshot = {
-      id: number | null;
-      image: string | null;
+  id: number | null;
+  image: string | null;
+}
+
+export enum Platforms {
+  windows = 'windows',
+  browser = 'browser'
+}
+
+export enum Sorts {
+  alphabetically = 'alphabetically',
+  releaseDate = 'release-date'
 }

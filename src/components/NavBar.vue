@@ -1,9 +1,22 @@
+<script setup lang="ts">
+import FilterIcon from './icons/IconFilter.vue'
+import SearchBar from './SearchBar.vue'
+</script>
+
+
 <template>
   <nav class="navbar" aria-label="Main navigation">
-    <RouterLink class="brand" to="/">Free Games Finder</RouterLink>
+    <div>
+      <h1 class="brand" to="/">Free Games Finder</h1>
 
-    <div class="links">
-      <RouterLink to="/">Home</RouterLink>
+      <div class="links">
+        <RouterLink id="filter" to="/filter">Filter <FilterIcon /></RouterLink>
+        <RouterLink to="/">Show all</RouterLink>
+      </div>
+    </div>
+
+    <div>
+      <SearchBar @search="console.log('search')"/>
     </div>
   </nav>
 </template>
@@ -16,6 +29,13 @@
   display: flex;
   justify-content: space-between;
   padding: 1rem 2rem;
+}
+
+#filter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 .brand {
@@ -32,10 +52,6 @@
 .links a {
   color: var(--color-text);
   font-weight: 600;
-}
-
-.links a.router-link-exact-active {
-  color: hsla(160, 100%, 37%, 1);
 }
 
 a {
