@@ -8,12 +8,13 @@ const games = ref<Game[]>([])
 const showID = ref<Game['id'] | null>(null)
 const errorMessage = ref<string | null>(null)
 
-const showGameClick = (id: Game['id']) => {
-  showID.value = id
-}
+const toggleGameClick = (id?: Game['id']) => {
+  if (id === undefined) {
+    showID.value = null
+    return
+  }
 
-const removeGameClick = () => {
-  showID.value = null
+  showID.value = showID.value === id ? null : id
 }
 
 onMounted(async () => {
@@ -31,7 +32,7 @@ onMounted(async () => {
       <VerboseGameCard
         class="verboseCard"
         :id="showID"
-        @close="removeGameClick"
+        @close="toggleGameClick()"
       />
     </div>
 
@@ -45,7 +46,7 @@ onMounted(async () => {
         :platform="game.platform" 
         :publisher="game.publisher"
 
-        @click="showGameClick(game.id)"
+        @click="toggleGameClick(game.id)"
       />
     </template>
   </main>

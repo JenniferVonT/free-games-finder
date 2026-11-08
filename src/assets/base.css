@@ -11,6 +11,7 @@
   --vt-c-black-transparent: #18181875;
 
   --vt-c-accent: #008031fb;
+  --vt-c-accent-hover: #009b3bfb;
   --vt-c-indigo: #2c3e50;
 
   --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
@@ -37,6 +38,7 @@
   --color-background-transparent: var(--vt-c-white-transparent);
 
   --color-accent: var(--vt-c-accent);
+  --color-accent-hover: var(--vt-c-accent-hover);
   --color-shadow: var(--vt-c-shadow-light);
   --color-overlay: var(--vt-c-overlay-light);
 
@@ -59,6 +61,7 @@
     --color-background-transparent: var(--vt-c-black-transparent);
 
     --color-accent: var(--vt-c-accent);
+    --color-accent-hover: var(--vt-c-accent-hover);
     --color-shadow: var(--vt-c-shadow-dark);
     --color-overlay: var(--vt-c-overlay-dark);
 
