@@ -78,7 +78,7 @@ const platformTags = computed(() => {
     color: var(--color-text);
     width: 15%;
     flex: 0 0 15%;
-    height: 30vh;
+    min-height: 30vh;
     overflow: hidden;
     box-shadow: 10px 10px 8px 4px var(--color-shadow);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -93,25 +93,25 @@ const platformTags = computed(() => {
 }
 
 .overlay {
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     background-color: var(--color-overlay);
     width: 100%;
-    height: 100%;
+    min-height: 30vh;
     padding: 7px;
-    overflow: hidden;
 }
 
 .details {
     min-width: 0;
-    overflow: hidden;
 }
 
 .tags {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    gap: 2px;
     min-width: 0;
 }
 
@@ -142,7 +142,7 @@ const platformTags = computed(() => {
 h2 {
     width: 100%;
     font-size: clamp(0.8rem, 15cqw, 1.75rem);
-    line-height: 2rem;
+    line-height: 1.2;
     color: var(--color-heading);
     margin: 0;
     overflow-wrap: anywhere;
@@ -161,9 +161,25 @@ b {
 
 @media (max-width: 768px) {
     .card {
-        width: 25vw;
-        flex-basis: 25vw;
-        height: 35vh;
+        width: calc((100% - 60px) / 3);
+        flex-basis: calc((100% - 60px) / 3);
+        min-height: 35vh;
+    }
+
+    .overlay {
+        min-height: 35vh;
+    }
+
+    h2 {
+        font-size: clamp(0.9rem, 17cqw, 1.75rem);
+        line-height: 1.05;
+    }
+
+    .desc {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
     }
 }
 </style>

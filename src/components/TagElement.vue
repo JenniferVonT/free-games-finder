@@ -14,7 +14,9 @@ defineProps<{
 
 <style scoped>
 .tag {
+    box-sizing: border-box;
     display: inline-block;
+    max-width: 100%;
     padding: 1px 6px;
     margin: 3px;
     border: 1px solid var(--color-border);
