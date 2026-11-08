@@ -23,7 +23,7 @@ defineProps<{
         align-items: center;
         width: max-content;
         height: max-content;
-        border-radius: 4px;
+        border-radius: var(--vt-c-border-radius);
         padding: 0px 15px;
         cursor: pointer;
         background: var(--color-accent);

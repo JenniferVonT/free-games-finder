@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import GameCard from '../components/GameCard.vue'
 import VerboseGameCard from '../components/VerboseGameCard.vue'
-import { fetchFreeGames, searchGame, type Game } from '../utils/games'
+import FilterSelector from '../components/FilterSelector.vue'
+import { fetchFreeGames, searchGame, fetchGamesByFilter, type Game, Platforms, Sorts } from '../utils/games'
+import { GenreTypes } from '../utils/genreTypes.ts'
 
 const route = useRoute()
+const router = useRouter()
 const games = ref<Game[]>([])
 const showID = ref<Game['id'] | null>(null)
+const showFilter = ref<boolean>(false)
 const errorMessage = ref<string | null>(null)
 
 watch(
@@ -15,6 +19,14 @@ watch(
   async (query) => {
     const searchQuery = Array.isArray(query) ? query[0] : query
     games.value = await searchGame(searchQuery ?? '')
+  },
+  { immediate: true },
+)
+
+watch(
+  () => route.query.filter,
+  (filter) => {
+    showFilter.value = filter === 'true'
   },
   { immediate: true },
 )
@@ -28,17 +40,51 @@ const toggleGameClick = (id?: Game['id']) => {
   showID.value = showID.value === id ? null : id
 }
 
-onMounted(async () => {
+const closeFilter = () => {
+  const query = { ...route.query }
+  delete query.filter
+  router.push({ name: 'home', query })
+}
+
+const applyFilter = async (genre: GenreTypes | null, platform: Platforms | null, sort: Sorts | null) => {
+  if (genre === null && platform === null && sort === null) return
+
+  closeFilter()
+
+  games.value = await fetchGamesByFilter({genre, platform, sort})
+}
+
+const loadAllGames = async () => {
   try {
     games.value = await fetchFreeGames()
   } catch (error) {
     errorMessage.value = error instanceof Error ? error.message : 'Unable to load games.'
   }
+}
+
+const resetGames = () => {
+  void loadAllGames()
+}
+
+onMounted(async () => {
+  window.addEventListener('show-all-games', resetGames)
+  await loadAllGames()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('show-all-games', resetGames)
 })
 </script>
 
 <template>
   <main>
+    <div v-if="showFilter" id="filterContainer">
+      <FilterSelector
+        @filter="applyFilter"
+        @close="closeFilter"
+      />
+    </div>
+
     <div v-if="showID !== null" id="verboseCardContainer">
       <VerboseGameCard
         class="verboseCard"
@@ -72,7 +118,8 @@ main {
   align-items: flex-start;
 }
 
-#verboseCardContainer {
+#verboseCardContainer,
+#filterContainer {
   display: flex;
   position: fixed;
   inset: 0;

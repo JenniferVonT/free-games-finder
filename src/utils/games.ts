@@ -1,5 +1,5 @@
 import { apiRequest } from './api';
-import { GenreTypes } from './genresTypes';
+import { GenreTypes } from './genreTypes';
 
 // Fetch all free games from the API.
 export async function fetchFreeGames() {
@@ -73,9 +73,9 @@ export async function searchGame(query: string) {
 
 // Fetch games by genre and/or platform
 export type GameFilterOptions = {
-  genre?: GenreTypes;
-  platform?: Platforms;
-  sort?: Sorts;
+  genre?: GenreTypes | null;
+  platform?: Platforms | null;
+  sort?: Sorts | null;
 };
 
 export type Game =  {

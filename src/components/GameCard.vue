@@ -23,6 +23,17 @@ const truncatedDescription = computed(() => {
     ? `${props.description.slice(0, maxCharacters)}...`
     : props.description
 })
+
+const platformTags = computed(() => {
+  if (!props.platform) {
+    return []
+  }
+
+  return props.platform
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+})
 </script>
 
 <template>
@@ -44,8 +55,8 @@ const truncatedDescription = computed(() => {
                 <template v-if="genre">
                     <TagElement :name="genre" />
                 </template>
-                <template v-if="platform">
-                    <TagElement :name="platform" />
+                <template v-for="tag in platformTags" :key="tag">
+                    <TagElement :name="tag" />
                 </template>
             </div>
         </div>
@@ -59,7 +70,7 @@ const truncatedDescription = computed(() => {
     box-sizing: border-box;
     padding: 0px;
     margin: 10px;
-    border-radius: 8px;
+    border-radius: var(--vt-c-border-radius);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

@@ -20,7 +20,7 @@ const emit = defineEmits<{
         align-items: center;
         width: min-content;
         height: min-content;
-        border-radius: 4px;
+        border-radius: var(--vt-c-border-radius);
         cursor: pointer;
         border: 1px solid var(--color-border);
         color: var(--color-border);

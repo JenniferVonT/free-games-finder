@@ -36,6 +36,17 @@ onMounted(async () => {
   }
 })
 
+const platformTags = computed(() => {
+  if (!game.value?.platform) {
+    return []
+  }
+
+  return game.value.platform
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+})
+
 </script>
 
 <template>
@@ -96,8 +107,8 @@ onMounted(async () => {
             <template v-if="game?.genre">
                 <TagElement :name="game?.genre" />
             </template>
-            <template v-if="game?.platform">
-                <TagElement :name="game?.platform" />
+            <template v-for="tag in platformTags" :key="tag">
+                <TagElement :name="tag" />
             </template>
         </div>
       </div>
@@ -135,7 +146,7 @@ onMounted(async () => {
     box-sizing: border-box;
     padding: 30px;
     margin: 10px;
-    border-radius: 8px;
+    border-radius: var(--vt-c-border-radius);
     background-color: var(--color-background-soft);
     color: var(--color-text);
     width: 85vw;
@@ -181,7 +192,7 @@ onMounted(async () => {
     height: 100%;
     border: 1px solid var(--color-border);
     background-color: var(--color-background);
-    border-radius: 4px;
+    border-radius: var(--vt-c-border-radius);
     overflow: hidden;
 }
 
@@ -238,7 +249,7 @@ onMounted(async () => {
     grid-area: rec;
     margin: 10px;
     padding: 5px;
-    border-radius: 4px;
+    border-radius: var(--vt-c-border-radius);
     border: 1px solid var(--color-border)
 }
 

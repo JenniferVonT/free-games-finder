@@ -12,6 +12,25 @@ function handleSearch(query: string) {
     router.push({ name: 'home', query: { search: trimmedQuery } })
   }
 }
+
+function openFilter() {
+  router.push({
+    name: 'home',
+    query: { ...router.currentRoute.value.query, filter: 'true' },
+  })
+}
+
+function showAll() {
+  const query = router.currentRoute.value.query
+
+  if (query.search) {
+    router.push({ name: 'home', query: {} })
+    return
+  }
+
+  router.push({ name: 'home', query: {} })
+  window.dispatchEvent(new Event('show-all-games'))
+}
 </script>
 
 
@@ -21,8 +40,8 @@ function handleSearch(query: string) {
       <h1 class="brand" to="/">Free Games Finder</h1>
 
       <div class="links">
-        <RouterLink id="filter" to="/filter">Filter <FilterIcon /></RouterLink>
-        <RouterLink to="/">Show all</RouterLink>
+        <div id="filter" @click="openFilter">Filter <FilterIcon /></div>
+        <div id="showAll" @click="showAll">Show all</div>
       </div>
     </div>
 
@@ -42,11 +61,13 @@ function handleSearch(query: string) {
   padding: 1rem 2rem;
 }
 
-#filter {
+#filter,
+#showAll {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
 }
 
 .brand {
