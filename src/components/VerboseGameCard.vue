@@ -17,7 +17,7 @@ const game = ref<GameVerbose>()
 const errorMessage = ref<string | null>(null)
 const hoveredScreenshot = ref<string | null>(null)
 const isDescriptionExpanded = ref(false)
-const descriptionLimit = 900
+const descriptionLimit = 500
 
 const descriptionText = computed(() => game.value?.description ?? '')
 const truncatedDescription = computed(() => {
@@ -44,9 +44,12 @@ onMounted(async () => {
     <h2 v-if="errorMessage" class="error-message">{{ errorMessage }}</h2>
 
     <template v-else>
-      <h2 id="title">
-    {{ game?.title }}
-      </h2>
+        <div id="title">
+        <h2>
+            {{ game?.title }}
+        </h2>
+        <p>Released {{ game?.release_date }}</p>
+        </div>
 
       <div id="gameBtn">
         <GameSiteBtn v-if="game?.game_url" :link="game.game_url" />
@@ -86,6 +89,7 @@ onMounted(async () => {
       </div>
       <div id="miscInfo">
         <div class="publ">
+            <p><b>Platform:</b> {{ game?.platform }}</p>
             <p><b>Publisher:</b> {{ game?.publisher }}</p>
             <p><b>Developer:</b> {{ game?.developer }}</p>
         </div>
@@ -163,6 +167,7 @@ onMounted(async () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding-right: 30px;
     grid-area: btn;
 }
 
@@ -176,7 +181,7 @@ onMounted(async () => {
     width: 100%;
     height: 100%;
     border: 1px solid var(--color-border);
-    background-color: var(--color-background-soft);
+    background-color: var(--color-background);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -211,6 +216,7 @@ onMounted(async () => {
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
+    border: 2px solid var(--color-background)
 }
 
 .screenshot:hover {
