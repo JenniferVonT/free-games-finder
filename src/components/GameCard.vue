@@ -161,7 +161,7 @@ b {
 
 @media (max-width: 768px) {
     .card {
-        width: calc((100% - 60px) / 3);
+        width: calc((100% - 10px) / 3);
         flex-basis: calc((100% - 60px) / 3);
         min-height: 35vh;
     }
@@ -179,6 +179,7 @@ b {
         display: -webkit-box;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
+        line-clamp: 2;
         overflow: hidden;
     }
 }

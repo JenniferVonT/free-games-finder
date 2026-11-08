@@ -116,6 +116,7 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+  padding:0;
 }
 
 #verboseCardContainer,
