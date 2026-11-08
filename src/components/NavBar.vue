@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import FilterIcon from './icons/IconFilter.vue'
 import SearchBar from './SearchBar.vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+function handleSearch(query: string) {
+  const trimmedQuery = query.trim()
+
+  if (trimmedQuery) {
+    router.push({ name: 'home', query: { search: trimmedQuery } })
+  }
+}
 </script>
 
 
@@ -16,7 +27,7 @@ import SearchBar from './SearchBar.vue'
     </div>
 
     <div>
-      <SearchBar @search="console.log('search')"/>
+      <SearchBar @search="handleSearch" />
     </div>
   </nav>
 </template>

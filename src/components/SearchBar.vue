@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 
 const emit = defineEmits<{
-    search: []
+    search: [query: string]
 }>()
+
+const query = ref('')
+
 </script>
 <template>
-  <div class="searchBar" @click="emit('search')">
-    <p>
-    SEARCH *IMPLEMENT*
-    </p>
+  <div class="searchBar">
+    <input v-model="query" placeholder="search" v-on:keyup.enter="emit('search', query)" />
   </div>
 </template>
 

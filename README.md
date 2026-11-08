@@ -46,3 +46,12 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## TODO
+-[] implement filtering.
+
+-[] implement search bar.
+
+-[] Adapt design and media queries for mobile browser.
+
+-[] check and fix light mode.

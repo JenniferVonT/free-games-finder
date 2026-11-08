@@ -52,12 +52,17 @@ export async function fetchGamesByFilter({
 
 // Fetch games by search query, not available on API so has to conduct the query here.
 export async function searchGame(query: string) {
-  // Get all games (TO-DO: best to do this in the backend in the future, or cache this so we don't have to make such large queries with every search)
+  // Get all games 
+  // TO-DO: best to do this in the backend in the future, or cache this so we don't have to make such large queries with every search. 
+  // Also expand the search algorithm to match results that are close but not perfect (taking into account misspellings).
   const games = await fetchFreeGames()
   const res: Game[] = [];
 
   for (const game of games) {
-    if (game.title?.includes(query)) {
+    const title = game.title?.toLowerCase()
+    const lcQuery = query.toLowerCase()
+
+    if (title?.includes(lcQuery)) {
       res.push(game);
     }
   }

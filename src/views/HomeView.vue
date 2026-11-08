@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import GameCard from '../components/GameCard.vue'
 import VerboseGameCard from '../components/VerboseGameCard.vue'
-import { fetchFreeGames, type Game } from '../utils/games'
+import { fetchFreeGames, searchGame, type Game } from '../utils/games'
 
+const route = useRoute()
 const games = ref<Game[]>([])
 const showID = ref<Game['id'] | null>(null)
 const errorMessage = ref<string | null>(null)
+
+watch(
+  () => route.query.search,
+  async (query) => {
+    const searchQuery = Array.isArray(query) ? query[0] : query
+    games.value = await searchGame(searchQuery ?? '')
+  },
+  { immediate: true },
+)
 
 const toggleGameClick = (id?: Game['id']) => {
   if (id === undefined) {
