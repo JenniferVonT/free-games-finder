@@ -1,10 +1,20 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import GameCard from '../components/GameCard.vue'
+import VerboseGameCard from '../components/VerboseGameCard.vue'
 import { fetchFreeGames, type Game } from '../utils/games'
 
 const games = ref<Game[]>([])
+const showID = ref<Game['id'] | null>(null)
 const errorMessage = ref<string | null>(null)
+
+const showGameClick = (id: Game['id']) => {
+  showID.value = id
+}
+
+const removeGameClick = () => {
+  showID.value = null
+}
 
 onMounted(async () => {
   try {
@@ -17,20 +27,29 @@ onMounted(async () => {
 
 <template>
   <main>
-    <p v-if="errorMessage">{{ errorMessage }}</p>
+    <div v-if="showID !== null" id="verboseCardContainer">
+      <VerboseGameCard
+        class="verboseCard"
+        :id="showID"
+        @close="removeGameClick"
+      />
+    </div>
 
     <template v-for="game in games" :key="game.id">
       <GameCard 
         :id="game.id"
-        :thumbnail="game.thumbnail"
+        :thumbnail=game.thumbnail
         :title="game.title ?? ''" 
         :description="game.short_description" 
         :genre="game.genre" 
         :platform="game.platform" 
         :publisher="game.publisher"
+
+        @click="showGameClick(game.id)"
       />
     </template>
   </main>
+
 </template>
 
 <style scoped>
@@ -39,5 +58,18 @@ main {
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
+}
+
+#verboseCardContainer {
+  display: flex;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--color-background-transparent);
+  justify-content: center;
+  align-items: center;
 }
 </style>

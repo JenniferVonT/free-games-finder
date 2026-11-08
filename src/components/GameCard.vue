@@ -63,20 +63,29 @@ const truncatedDescription = computed(() => {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-    background-color: var(--color-background-soft);
+    background-color: var(--color-accent);
     color: var(--color-text);
     width: 15%;
     flex: 0 0 15%;
     height: 30vh;
     overflow: hidden;
     box-shadow: 10px 10px 8px 4px var(--color-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) {
+    .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 10px 18px 14px 4px var(--color-shadow);
+        border: 0.2px solid var(--color-accent);
+    }
 }
 
 .overlay {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--color-overlay);
     width: 100%;
     height: 100%;
     padding: 7px;

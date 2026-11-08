@@ -7,7 +7,7 @@ export async function fetchFreeGames() {
 }
 
 // Fetch a single free game by its ID from the API.
-export async function fetchFreeGameById(id: number) {
+export async function fetchFreeGameById(id: Game['id']) {
   return apiRequest<GameVerbose>(`/game?id=${id}`);
 }
 
@@ -30,7 +30,7 @@ export type Game =  {
     freetogame_profile_url: string | null;
 }
 
-type GameVerbose = {
+export type GameVerbose = {
   id: number;
   title: string | null;
   thumbnail: string | null;
