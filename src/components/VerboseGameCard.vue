@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import ExitBtn from './exitBtn.vue'
 import GameSiteBtn from './GameSiteBtn.vue'
 import TagElement from './TagElement.vue'
@@ -16,12 +16,23 @@ const emit = defineEmits<{
 const game = ref<GameVerbose>()
 const errorMessage = ref<string | null>(null)
 const hoveredScreenshot = ref<string | null>(null)
+const isDescriptionExpanded = ref(false)
+const descriptionLimit = 900
+
+const descriptionText = computed(() => game.value?.description ?? '')
+const truncatedDescription = computed(() => {
+  if (descriptionText.value.length <= descriptionLimit) {
+    return descriptionText.value
+  }
+
+  return `${descriptionText.value.slice(0, descriptionLimit)}...`
+})
 
 onMounted(async () => {
   try {
     game.value = await fetchFreeGameById(props.id)
-  } catch (error) {
-    errorMessage.value = error instanceof Error ? error.message : 'Unable to load game.'
+    } catch {
+    errorMessage.value = 'Unable to load game.'
   }
 })
 
@@ -30,16 +41,19 @@ onMounted(async () => {
 <template>
   <div class="card">
     <ExitBtn @close="emit('close')" class="exitBtn"/>
-    <h2 id="title">
-    {{ game?.title }}
-    </h2>
+    <h2 v-if="errorMessage" class="error-message">{{ errorMessage }}</h2>
 
-    <div id="gameBtn">
+    <template v-else>
+      <h2 id="title">
+    {{ game?.title }}
+      </h2>
+
+      <div id="gameBtn">
         <GameSiteBtn v-if="game?.game_url" :link="game.game_url" />
-    </div>
+      </div>
     
 
-    <div class="images">
+      <div class="images">
         <div 
             class="thumbnail"
             :style="{ backgroundImage: `url(${hoveredScreenshot ?? game?.thumbnail})` }"
@@ -55,15 +69,26 @@ onMounted(async () => {
                 ></div>
             </template>
         </div>
-    </div>
+      </div>
 
-    <p class="desc">
-    {{ game?.description }}
-    </p>
-    <div id="miscInfo">
-        <p class="publ">
-        <b>Publisher :</b> <span>{{ game?.publisher }}</span>
+      <div class="descriptionContainer">
+        <p class="desc">
+          {{ isDescriptionExpanded ? descriptionText : truncatedDescription }}
         </p>
+        <button
+          v-if="descriptionText.length > descriptionLimit"
+          class="read-more"
+          type="button"
+          @click="isDescriptionExpanded = !isDescriptionExpanded"
+        >
+          {{ isDescriptionExpanded ? 'Read less' : 'Read more' }}
+        </button>
+      </div>
+      <div id="miscInfo">
+        <div class="publ">
+            <p><b>Publisher:</b> {{ game?.publisher }}</p>
+            <p><b>Developer:</b> {{ game?.developer }}</p>
+        </div>
         <div class="tags">
             <template v-if="game?.genre">
                 <TagElement :name="game?.genre" />
@@ -72,10 +97,21 @@ onMounted(async () => {
                 <TagElement :name="game?.platform" />
             </template>
         </div>
-    </div>
-    <div id="gameRecSys">
+      </div>
 
-    </div>
+      <template v-if="game?.minimum_system_requirements">
+        <div id="gameRecSys">
+            <h3>Minimum system requirements</h3>
+            <div id="sysRecData">
+                <p><b>os: </b> {{ game?.minimum_system_requirements?.os }}</p>
+                <p><b>processor: </b> {{ game?.minimum_system_requirements?.processor }}</p>
+                <p><b>memory: </b> {{ game?.minimum_system_requirements?.memory }}</p>
+                <p><b>graphics: </b> {{ game?.minimum_system_requirements?.graphics }}</p>
+                <p><b>storage: </b> {{ game?.minimum_system_requirements?.storage }}</p>
+            </div>
+        </div>
+      </template>
+    </template>
   </div>
 </template>
 
@@ -83,12 +119,12 @@ onMounted(async () => {
 .card {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: 1fr 2.5fr 2fr 1fr;
+    grid-template-rows: 1fr 3fr 2fr 1fr;
     grid-template-areas:
-    "title title title images images images"
-    "btn   btn   btn   images images images"
-    "desc  desc  desc  desc   rec    rec"
-    "misc  misc  misc  misc   rec    rec";
+    "title title images images images images"
+    "btn   btn   images images images images"
+    "desc  desc  desc   desc   rec    rec"
+    "misc  misc  misc   misc   rec    rec";
     position: relative;
     flex-direction: column;
     justify-content: space-between;
@@ -115,7 +151,18 @@ onMounted(async () => {
     right: 10px;
 }
 
+.error-message {
+    grid-area: 1 / 1 / -1 / -1;
+    align-self: center;
+    justify-self: center;
+    color: var(--color-heading);
+    text-align: center;
+}
+
 #gameBtn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     grid-area: btn;
 }
 
@@ -175,6 +222,7 @@ onMounted(async () => {
     flex-direction: row;
     flex-wrap: nowrap;
     min-width: 0;
+    margin-top: 20px;
 }
 
 #miscInfo {
@@ -183,24 +231,74 @@ onMounted(async () => {
 
 #gameRecSys {
     grid-area: rec;
+    margin: 10px;
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid var(--color-border)
+}
+
+#sysRecData {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: no-wrap;
 }
 
 .publ {
+    display: flex;
+    flex-direction: column;
     font-size: clamp(0.75rem, 6cqw, 0.9rem);
     line-height: 1rem;
     margin: 0;
     min-width: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .desc {
+    width: 100%;
     grid-area: desc;
     font-size: 0.9rem;
     line-height: 1rem;
     margin: 0;
     overflow-wrap: anywhere;
+}
+
+.descriptionContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    grid-area: desc;
+    min-width: 0;
+    min-height: 0;
+    height: 100%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.descriptionContainer .desc {
+    max-height: 100%;
+    overflow-y: auto;
+}
+
+.read-more {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-accent);
+    cursor: pointer;
+    font: inherit;
+    text-decoration: underline;
+}
+
+h3 {
+    width: 100%;
+    font-size: clamp(0.5rem, 3cqw, 1.15rem);
+    line-height: 1.15rem;
+    color: var(--color-heading);
+    margin: 0;
+    overflow-wrap: anywhere; 
+    margin-bottom: 5px;
 }
 
 h2 {

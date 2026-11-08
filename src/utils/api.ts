@@ -55,13 +55,18 @@ function formatApiErrorDetail(detail?: ApiErrorDetailItem[]) {
   return formatted.length > 0 ? formatted.join('; ') : undefined;
 }
 
+function removeApiAddresses(message: string) {
+  return message.replace(/https?:\/\/[^\s"'<>]+/gi, 'the requested resource');
+}
+
 function getApiErrorMessage(payload?: ApiErrorPayload) {
-  return (
+  const message =
     formatApiErrorDetail(payload?.detail) ??
     stringifyApiErrorPart(payload?.message) ??
     stringifyApiErrorPart(payload?.code) ??
-    'API request failed'
-  );
+    'API request failed';
+
+  return removeApiAddresses(message);
 }
 
 export class ApiRequestError extends Error {

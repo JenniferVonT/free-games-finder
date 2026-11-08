@@ -3,12 +3,20 @@ import { GenreTypes } from './genresTypes';
 
 // Fetch all free games from the API.
 export async function fetchFreeGames() {
-  return apiRequest<Game[]>('/games');
+  try {
+    return await apiRequest<Game[]>('/games');
+  } catch (error) {
+    throw new Error('Could not load games')
+  }
 }
 
 // Fetch a single free game by its ID from the API.
 export async function fetchFreeGameById(id: Game['id']) {
-  return apiRequest<GameVerbose>(`/game?id=${id}`);
+  try {
+    return await apiRequest<GameVerbose>(`/game?id=${id}`);
+  } catch (error) {
+    throw new Error('Could not load game')
+  }
 }
 
 // Fetch games by genre
